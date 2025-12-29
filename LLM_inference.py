@@ -1,8 +1,8 @@
 import requests
 import json
-import dotenv
+from dotenv import load_dotenv
 import os
-dotenv.load_dotenv()
+load_dotenv()
 
 NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
 
