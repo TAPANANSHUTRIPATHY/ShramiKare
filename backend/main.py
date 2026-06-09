@@ -1,7 +1,8 @@
 #fastapi code here
-from fastapi import FastAPI, Request, Response, status, Query, HTTPException
+from fastapi import FastAPI, Request, Response, status, Query, HTTPException, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import requests
 from fastapi import Body
 from DB_operations import add_user, get_all_users, search_user_by_aadhaar, get_user_by_id, update_user, delete_user, get_facilities_by_district, get_all_users_json, store_otp, validate_otp
@@ -10,7 +11,6 @@ from message import send_sms_message
 from translate import multilingual_output
 import json
 from google import genai
-from fastapi import Form
 import random
 from QR_generator import generate_qr
 from datetime import datetime, timezone
@@ -18,7 +18,9 @@ import os
 import uvicorn
 
 app = FastAPI(root_path="/api")
-# app = FastAPI()
+os.makedirs("uploads", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,11 +31,63 @@ app.add_middleware(
 )
 
 @app.post("/users/")
-async def create_migrant(migrant: dict = Body(...)):
-    result = add_user(migrant)
+async def create_migrant(request: Request):
+    content_type = request.headers.get("content-type", "")
+    if "multipart/form-data" in content_type:
+        form_data = await request.form()
+        data = {}
+        for key, value in form_data.items():
+            if key in ["records", "companies"]:
+                try:
+                    data[key] = json.loads(value)
+                except Exception:
+                    data[key] = value
+            elif key in ["profilePhoto", "aadhaarPhoto", "passportPhoto"]:
+                pass
+            else:
+                if key == "age":
+                    try:
+                        data[key] = int(value)
+                    except ValueError:
+                        data[key] = value
+                    continue
+                if key == "phonenumber":
+                    try:
+                        data[key] = int(value)
+                    except ValueError:
+                        data[key] = value
+                    continue
+                data[key] = value
+
+        # Handle file uploads
+        aadhaar_number = data.get("aadhaarNumber", "unknown")
+        
+        profile_file = form_data.get("profilePhoto")
+        if profile_file and hasattr(profile_file, "filename") and profile_file.filename:
+            file_path = f"uploads/{aadhaar_number}_profile_{profile_file.filename}"
+            with open(file_path, "wb") as f:
+                f.write(await profile_file.read())
+            data["profilePhotoUrl"] = f"/api/uploads/{aadhaar_number}_profile_{profile_file.filename}"
+
+        aadhaar_file = form_data.get("aadhaarPhoto")
+        if aadhaar_file and hasattr(aadhaar_file, "filename") and aadhaar_file.filename:
+            file_path = f"uploads/{aadhaar_number}_aadhaar_{aadhaar_file.filename}"
+            with open(file_path, "wb") as f:
+                f.write(await aadhaar_file.read())
+            data["aadhaarPhotoUrl"] = f"/api/uploads/{aadhaar_number}_aadhaar_{aadhaar_file.filename}"
+            if "records" not in data or not isinstance(data["records"], dict):
+                data["records"] = {}
+            data["records"]["aadhaarImageUrl"] = data["aadhaarPhotoUrl"]
+    else:
+        data = await request.json()
+
+    result = add_user(data)
     if result.get("success"):
-        return {"message": "Migrant created", "id": str(result["id"].id)}
+        id_obj = result["id"]
+        id_str = getattr(id_obj, "id", str(id_obj))
+        return {"message": "Migrant created", "id": id_str}
     return JSONResponse(status_code=400, content={"error": result.get("error")})
+
 
 @app.get("/users/")
 async def list_migrants():
@@ -62,7 +116,12 @@ async def get_migrant_by_id(user_id: str):
     result = get_user_by_id(user_id)
     if result.get("success"):
         return result["data"]
+    # Fallback to Aadhaar number search
+    result_aadhaar = search_user_by_aadhaar(user_id)
+    if result_aadhaar.get("success") and result_aadhaar.get("data"):
+        return result_aadhaar["data"][0]
     return JSONResponse(status_code=404, content={"error": result.get("error")})
+
 
 @app.put("/users/id/{user_id}")
 async def update_migrant(user_id: str, update_data: dict = Body(...)):
@@ -155,11 +214,16 @@ async def send_reminder(aadhaar_id: str):
     return {"message": "Reminder sent successfully", "sms_sid": sms_sid}
 
 
-client = genai.Client()
+client = None
+if os.getenv("GEMINI_API_KEY"):
+    client = genai.Client()
 
 @app.get("/outbreak-prediction/")
 async def outbreak_prediction():
+    if not client:
+        return {"outbreak_summary": "Gemini API key missing. Outbreak surveillance offline.", "severity_score": 0}
     try:
+
         user_results = get_all_users()
         if not user_results.get("success") or not user_results.get("data"):
             raise HTTPException(status_code=404, detail="No user data found")
@@ -229,14 +293,19 @@ async def generate_otp(user_id: str = Form(...)):
             target_language = user_data.get("language", "en")
             phone_number = str(user_data.get("phonenumber"))
             otp_message = f"Your OTP is: {otp}"
-            if(target_language!="en"):
-                translation_result = await multilingual_output(otp_message, target_language)
-                translated_message = translation_result.get("advice", [otp_message])[0]
-                send_sms_message(phone=phone_number, message=translated_message)
-            else:
-                send_sms_message(phone=phone_number, message=otp_message)
+            try:
+                if(target_language!="en"):
+                    translation_result = await multilingual_output(otp_message, target_language)
+                    translated_message = translation_result.get("advice", [otp_message])[0]
+                    send_sms_message(phone=phone_number, message=translated_message)
+                else:
+                    send_sms_message(phone=phone_number, message=otp_message)
+            except Exception as e:
+                print(f"\n[WARNING] Could not send OTP SMS to {phone_number}: {e}")
+                print(f"[DEVELOPER INFO] Local generated OTP for login is: '{otp}'")
         return {"message": "OTP generated", "otp": otp}
     return JSONResponse(status_code=500, content={"error": result.get("error")})
+
 
 @app.post("/otp/validate/")
 async def check_otp(user_id: str = Form(...), otp: str = Form(...)):

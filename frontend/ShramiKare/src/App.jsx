@@ -12,14 +12,23 @@ import NotFound from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 
 function App() {
-  const storedUserId = localStorage.getItem("userId");
-  const [userId, setUserId] = React.useState(storedUserId || null);
+  const [userId, setUserId] = React.useState(() => localStorage.getItem("userId") || null);
+
+  const handleLogin = (id) => {
+    localStorage.setItem("userId", id);
+    setUserId(id);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+    setUserId(null);
+  };
 
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<Layout userId={userId} onLogout={handleLogout} />}>
         <Route index element={<LandingPage />} />
-        <Route path="login" element={<OtpLoginPage />} />
+        <Route path="login" element={<OtpLoginPage onLogin={handleLogin} />} />
         <Route path="doctor-details" element={<DoctorDetailsPage />} />
         <Route path="aadhaar-capture" element={<AadhaarCardPage userId={userId} />} />
         <Route path="digital-id" element={<DigitalHealthIdPage userId={userId} />} />

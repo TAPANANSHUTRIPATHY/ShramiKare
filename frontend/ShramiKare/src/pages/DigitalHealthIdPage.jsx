@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
-const baseURL = "http://localhost:8000/api";
+const baseURL = `${API_BASE_URL}/api`;
 
 export default function DigitalHealthIdPage({ userId }) {
   const [user, setUser] = useState(null);
@@ -15,7 +16,11 @@ export default function DigitalHealthIdPage({ userId }) {
       setError("");
       try {
         const res = await axios.get(`${baseURL}/users/by-aadhaar/${userId}`);
-        setUser(res.data[0]);
+        if (res.data && res.data.length > 0) {
+          setUser(res.data[0]);
+        } else {
+          setError("User details not found for this Aadhaar number.");
+        }
       } catch (err) {
         setError("Could not load user details.");
       } finally {
@@ -24,6 +29,7 @@ export default function DigitalHealthIdPage({ userId }) {
     }
     if (userId) fetchUser();
   }, [userId]);
+
 
   useEffect(() => {
     async function fetchQr() {
@@ -90,10 +96,11 @@ export default function DigitalHealthIdPage({ userId }) {
               <div className="rounded-full w-40 h-40 bg-green-200 overflow-hidden mb-4">
                 {user?.profilePhotoUrl ? (
                   <img
-                    src={user.profilePhotoUrl}
+                    src={user.profilePhotoUrl.startsWith("http") ? user.profilePhotoUrl : `${API_BASE_URL}${user.profilePhotoUrl}`}
                     alt="User"
                     className="w-full h-full object-cover rounded-full"
                   />
+
                 ) : (
                   <img
                     src="https://avatar.iran.liara.run/public"

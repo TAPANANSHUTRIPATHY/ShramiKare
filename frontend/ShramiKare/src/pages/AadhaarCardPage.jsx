@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const baseURL = "http://127.0.0.1:8000/api"//process.env.REACT_APP_API_BASE_URL
+import { API_BASE_URL } from "../config";
+
+const baseURL = `${API_BASE_URL}/api`;//process.env.REACT_APP_API_BASE_URL
+
 
 export default function AadhaarCardPage({ userId }) {
   const [aadhaarImgUrl, setAadhaarImgUrl] = useState(null);
@@ -15,7 +18,7 @@ export default function AadhaarCardPage({ userId }) {
       try {
         const res = await fetch(`${baseURL}/users/id/${userId}`);
         const data = await res.json();
-        const imgUrl = data.records?.aadhaarImageUrl;
+        const imgUrl = data.records?.aadhaarImageUrl || data.aadhaarPhotoUrl;
         if (imgUrl) setAadhaarImgUrl(imgUrl);
         else setError("No Aadhaar image uploaded.");
       } catch {
@@ -42,7 +45,7 @@ export default function AadhaarCardPage({ userId }) {
             <div className="text-green-700 text-lg">Loading...</div>
           ) : aadhaarImgUrl ? (
             <img
-              src={aadhaarImgUrl}
+              src={aadhaarImgUrl.startsWith("http") ? aadhaarImgUrl : `${API_BASE_URL}${aadhaarImgUrl}`}
               alt="Aadhaar Card"
               className="rounded-lg max-h-72 shadow"
               onError={e => {
@@ -50,6 +53,7 @@ export default function AadhaarCardPage({ userId }) {
                 e.target.src = "/sample_aadhar.png"
               }}
             />
+
           ) : (
             <>
               <img

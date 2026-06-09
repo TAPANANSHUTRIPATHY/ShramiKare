@@ -6,9 +6,12 @@ const districts = [
   "Thiruvananthapuram", "Thrissur", "Wayanad"
 ];
 
-const baseURL = "http://127.0.0.1:8000/api" //process.env.REACT_APP_API_BASE_URL
+import { API_BASE_URL } from "../config";
+
+const baseURL = `${API_BASE_URL}/api`; //process.env.REACT_APP_API_BASE_URL
 
 export default function DoctorDetailsPage() {
+
   const [district, setDistrict] = useState("");
   const [loading, setLoading] = useState(false);
   const [facilities, setFacilities] = useState([]);

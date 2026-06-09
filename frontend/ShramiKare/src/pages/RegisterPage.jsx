@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { API_BASE_URL } from "../config";
 
-const baseURL = "http://127.0.0.1:8000/api"//process.env.REACT_APP_API_BASE_URL
+const baseURL = `${API_BASE_URL}/api`;
 
 export default function RegisterPage() {
+
 // Add profilePhoto to state
 const [form, setForm] = useState({
     name: "",
@@ -146,21 +149,21 @@ function handleFileChange(e) {
     }
 
     try {
-    const res = await axios.post(`${baseURL}/users/`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-      if (res.ok) {
+      const res = await axios.post(`${baseURL}/users/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.status === 200 || res.status === 201) {
         alert("Registration successful");
-        // Reset form or redirect as needed
+        window.location.href = "/login";
       } else {
-        const data = await res.json();
-        setErrors({ form: data.error || "Registration failed" });
+        setErrors({ form: res.data?.error || "Registration failed" });
       }
     } catch (error) {
-      setErrors({ form: "Network error" });
+      setErrors({ form: error.response?.data?.error || "Network error" });
     }
+
 
     setSubmitting(false);
   }

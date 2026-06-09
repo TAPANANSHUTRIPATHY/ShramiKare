@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { API_BASE_URL } from "../config";
 
-const baseURL = "http://127.0.0.1:8000/api"
+const baseURL = `${API_BASE_URL}/api`;
 
 export default function OtpLoginPage() {
+
   const [step, setStep] = useState(1);
   const [inputValue, setInputValue] = useState("");
   const [otp, setOtp] = useState("");

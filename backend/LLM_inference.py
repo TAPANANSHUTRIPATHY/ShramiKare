@@ -46,9 +46,24 @@ def invoke_nvidia_llm(prompt: str) -> dict:
 #     return response.text.strip()
 
 
-client = genai.Client(api_key=GEMINI_API_KEY)
+from datetime import datetime, timedelta
+
+client = None
+if GEMINI_API_KEY:
+    client = genai.Client(api_key=GEMINI_API_KEY)
 
 def predict_follow_up_date(user_data: dict) -> str:
+    if not client:
+        print("Gemini client not initialized (missing API key). Fallback to default follow-up in 14 days.")
+        last_visit_str = user_data.get('records', {}).get('lastVisitDate')
+        if last_visit_str:
+            try:
+                last_visit = datetime.strptime(last_visit_str.strip(), "%Y-%m-%d").date()
+                return str(last_visit + timedelta(days=14))
+            except ValueError:
+                pass
+        return str((datetime.now().date() + timedelta(days=14)))
+
     prompt = f"""
     Patient Details:
     Name: {user_data.get('name')}
@@ -63,22 +78,23 @@ def predict_follow_up_date(user_data: dict) -> str:
     Based on these details, suggest the next follow-up date in YYYY-MM-DD format.
     """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-
-    # Expected output: date string in YYYY-MM-DD
-    text = response.text.strip()
-
-    # Validate date format roughly
     try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        # Expected output: date string in YYYY-MM-DD
+        text = response.text.strip()
+
+        # Validate date format roughly
         next_follow_up = datetime.strptime(text, "%Y-%m-%d").date()
         return str(next_follow_up)
-    except ValueError:
-        print(f"Unexpected response for follow-up date: {text}")
-        # You may want a fallback default date here
-        return None
+    except Exception as e:
+        print(f"Error predicting follow-up date: {e}")
+        # Default fallback
+        return str((datetime.now().date() + timedelta(days=14)))
+
 
 # print(predict_follow_up_date({
 #         "name": "Jane Doe",

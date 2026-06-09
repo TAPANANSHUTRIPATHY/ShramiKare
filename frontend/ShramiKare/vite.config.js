@@ -8,6 +8,19 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env': env,
     },
-    // ...other config
+    server: {
+      port: 5173,
+      proxy: {
+        // Proxy /api requests to FastAPI backend
+        // FastAPI backend routes: /users/, /facilities/ etc. at port 8000
+        // Frontend calls: /api/users/, /api/facilities/ etc.
+        // Rewrite: strip /api prefix before forwarding to backend
+        '/api': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+    },
   };
 });
