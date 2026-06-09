@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
+import { Link } from "react-router-dom";
 
 const baseURL = `${API_BASE_URL}/api`;
 
@@ -28,6 +29,7 @@ export default function DigitalHealthIdPage({ userId }) {
       }
     }
     if (userId) fetchUser();
+    else setLoading(false);
   }, [userId]);
 
 
@@ -47,6 +49,19 @@ export default function DigitalHealthIdPage({ userId }) {
     fetchQr();
   }, [userId]);
 
+  if (!userId) {
+    return (
+      <div className="min-h-screen bg-green-50 flex items-center justify-center">
+        <div className="text-center bg-white rounded-xl shadow p-10">
+          <p className="text-green-700 text-lg mb-4">Please log in to view your Digital Health ID.</p>
+          <Link to="/login" className="bg-green-700 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition">
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-green-50 flex items-center justify-center">
@@ -62,6 +77,7 @@ export default function DigitalHealthIdPage({ userId }) {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-green-50">

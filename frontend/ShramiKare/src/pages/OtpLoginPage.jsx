@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 
 const baseURL = `${API_BASE_URL}/api`;
 
-export default function OtpLoginPage() {
+export default function OtpLoginPage({ onLogin }) {
 
   const [step, setStep] = useState(1);
   const [inputValue, setInputValue] = useState("");
@@ -11,6 +12,7 @@ export default function OtpLoginPage() {
   const [userId, setUserId] = useState(""); // Store for step 2
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   // Handle initial submit to request OTP
   const handleSubmitId = async (e) => {
@@ -30,31 +32,6 @@ export default function OtpLoginPage() {
         setStep(2);
       } else {
         setError(data.error || "Failed to send OTP");
-      }
-    } catch {
-      setError("Network error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle OTP submit for verification
-  const handleSubmitOtp = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const res = await fetch(`${baseURL}/otp/validate/`, {
-        method: "POST",
-        body: new URLSearchParams({ user_id: userId, otp }),
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
-      const data = await res.json();
-      if (data.message === "OTP validated") {
-        // redirect or set authenticated
-        window.location.href = "/digital-id";
-      } else {
-        setError(data.error || "Incorrect OTP");
       }
     } catch {
       setError("Network error");
@@ -129,10 +106,13 @@ export default function OtpLoginPage() {
                   });
                   const data = await res.json();
                   if (data.message === "OTP validated") {
-                    // After successful OTP validation
-                    localStorage.setItem("userId", userId);
-                    setUserId(userId);
-                    window.location.href = "/digital-id";
+                    // After successful OTP validation, update app state
+                    if (onLogin) {
+                      onLogin(userId);
+                    } else {
+                      localStorage.setItem("userId", userId);
+                    }
+                    navigate("/digital-id");
                   } else {
                     setError(data.error || "Incorrect OTP");
                   }
