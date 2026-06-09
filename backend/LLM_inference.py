@@ -46,7 +46,15 @@ def invoke_nvidia_llm(prompt: str) -> dict:
 #     return response.text.strip()
 
 
+<<<<<<< Updated upstream
 client = genai.Client(api_key=GEMINI_API_KEY)
+=======
+from datetime import datetime, timedelta
+
+client = None
+if GEMINI_API_KEY:
+    client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+>>>>>>> Stashed changes
 
 def predict_follow_up_date(user_data: dict) -> str:
     prompt = f"""

@@ -7,13 +7,36 @@ import json
 from datetime import datetime, timedelta
 
 import os
+import glob
 
+<<<<<<< Updated upstream
 service_account_path = os.path.join(os.path.dirname(__file__), "ps82-stellarythm-firebase-adminsdk-fbsvc-de4ed2b41c.json")
 if not os.path.exists(service_account_path):
     raise FileNotFoundError(f"Service account file not found: {service_account_path}")
 
 cred = credentials.Certificate(service_account_path)
 app = firebase_admin.initialize_app(cred)
+=======
+# Auto-detect Firebase service account JSON in backend directory
+_backend_dir = os.path.dirname(os.path.abspath(__file__))
+_firebase_jsons = glob.glob(os.path.join(_backend_dir, "*firebase-adminsdk*.json"))
+
+if _firebase_jsons:
+    service_account_path = _firebase_jsons[0]
+elif os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+    service_account_path = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+else:
+    raise FileNotFoundError(
+        "No Firebase service account JSON found in backend/ folder.\n"
+        "Download it from: Firebase Console -> Project Settings -> Service Accounts -> Generate New Private Key"
+    )
+
+if not firebase_admin._apps:
+    cred = credentials.Certificate(service_account_path)
+    app = firebase_admin.initialize_app(cred)
+else:
+    app = firebase_admin.get_app()
+>>>>>>> Stashed changes
 db = firestore.client()
 
 
@@ -291,7 +314,12 @@ def validate_otp(user_id, entered_otp):
         otp_history = doc.to_dict().get("otpHistory", [])
         now = datetime.utcnow().isoformat()
         for record in reversed(otp_history):
+<<<<<<< Updated upstream
             if record["otp"] == entered_otp:
+=======
+            record_otp_str = str(record["otp"])
+            if record_otp_str == entered_otp_str:
+>>>>>>> Stashed changes
                 if record["status"] == "active" and record["expiresAt"] > now:
                     record["status"] = "used"
                     doc_ref.update({"otpHistory": otp_history})
@@ -360,7 +388,6 @@ def main():
 
         # Get user by ID
         user_id = add_result["id"].id      #add_result["id"].path.split("/")[-1]
-        # print(user_id,"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
         if user_id:
             get_result = get_user_by_id(user_id)

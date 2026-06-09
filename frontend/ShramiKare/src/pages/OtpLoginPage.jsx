@@ -1,4 +1,13 @@
 import React, { useState } from "react";
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
+=======
+import { DEMO_USER_ID } from "../demoData";
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 const baseURL = "http://127.0.0.1:8000/api"
 
@@ -9,6 +18,12 @@ export default function OtpLoginPage() {
   const [userId, setUserId] = useState(""); // Store for step 2
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // ─── Demo Login Handler ─────────────────────────────────────────────
+  const handleDemoLogin = () => {
+    localStorage.setItem("userId", DEMO_USER_ID);
+    window.location.href = "/digital-id";
+  };
 
   // Handle initial submit to request OTP
   const handleSubmitId = async (e) => {
@@ -106,6 +121,21 @@ export default function OtpLoginPage() {
                 {loading ? "Sending OTP..." : "Send OTP"}
               </button>
               {error && <p className="text-red-600 mt-3 text-sm">{error}</p>}
+
+              {/* ── Demo Login Section ────────────────────────────── */}
+              <div className="mt-6 pt-4 border-t border-green-300">
+                <p className="text-center text-green-600 text-xs mb-3">
+                  No backend? Try a demo walkthrough ↓
+                </p>
+                <button
+                  type="button"
+                  onClick={handleDemoLogin}
+                  className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-500 transition shadow flex items-center justify-center gap-2"
+                >
+                  <span>🧪</span> Demo Login (No OTP Required)
+                </button>
+              </div>
+
               <p className="mt-5 text-center text-green-700 text-sm">
                 Don't have an account? <a href="/register" className="underline">Register</a>
               </p>

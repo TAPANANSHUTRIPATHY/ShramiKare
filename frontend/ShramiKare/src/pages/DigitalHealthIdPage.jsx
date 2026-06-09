@@ -1,33 +1,72 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+import { API_BASE_URL } from "../config";
+import { Link } from "react-router-dom";
+=======
+import { DEMO_USER_ID, DEMO_USER_DATA, DEMO_QR_HTML, isDemoMode } from "../demoData";
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 const baseURL = "http://localhost:8000/api";
 
-export default function DigitalHealthIdPage({ userId }) {
+export default function DigitalHealthIdPage({ userId: propUserId }) {
+  // Check localStorage if prop is empty
+  const userId = propUserId || localStorage.getItem("userId");
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [qrHtml, setQrHtml] = useState("");
   const [error, setError] = useState("");
+  const [usingDemo, setUsingDemo] = useState(false);
 
   useEffect(() => {
     async function fetchUser() {
       setLoading(true);
       setError("");
+      setUsingDemo(false);
+
+      // If demo mode, skip API call
+      if (userId === DEMO_USER_ID) {
+        setUser(DEMO_USER_DATA);
+        setQrHtml(DEMO_QR_HTML);
+        setUsingDemo(true);
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await axios.get(`${baseURL}/users/by-aadhaar/${userId}`);
         setUser(res.data[0]);
       } catch (err) {
-        setError("Could not load user details.");
+        // Fallback to demo data
+        setUser(DEMO_USER_DATA);
+        setUsingDemo(true);
       } finally {
         setLoading(false);
       }
     }
+<<<<<<< Updated upstream
     if (userId) fetchUser();
+<<<<<<< Updated upstream
+=======
+    else setLoading(false);
+=======
+    if (userId) {
+      fetchUser();
+    } else {
+      setLoading(false);
+      setError("No user ID found. Please log in first.");
+    }
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   }, [userId]);
 
   useEffect(() => {
     async function fetchQr() {
-      if (!userId) return;
+      if (!userId || userId === DEMO_USER_ID) return;
       try {
         const qrRes = await axios.get(
           `${baseURL}/generate-qr/?text=${baseURL}/users/by-aadhaar/${userId}`,
@@ -35,7 +74,7 @@ export default function DigitalHealthIdPage({ userId }) {
         );
         setQrHtml(qrRes.data);
       } catch {
-        setQrHtml("");
+        setQrHtml(DEMO_QR_HTML);
       }
     }
     fetchQr();
@@ -49,10 +88,23 @@ export default function DigitalHealthIdPage({ userId }) {
     );
   }
 
-  if (error) {
+  if (error && !user) {
     return (
       <div className="min-h-screen bg-green-50 flex items-center justify-center">
-        <p className="text-red-600 text-lg">{error}</p>
+        <div className="text-center">
+          <p className="text-red-600 text-lg mb-4">{error}</p>
+          <a href="/login" className="bg-green-700 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition">
+            Go to Login
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-green-50 flex items-center justify-center">
+        <p className="text-red-600 text-lg">No user data available.</p>
       </div>
     );
   }
@@ -66,6 +118,13 @@ export default function DigitalHealthIdPage({ userId }) {
         <p className="text-center text-green-700 mb-6">
           Your official digital health identification
         </p>
+
+        {/* Demo mode banner */}
+        {usingDemo && (
+          <div className="bg-blue-50 border border-blue-300 text-blue-700 rounded-lg p-3 mb-6 text-center text-sm">
+            🧪 <strong>Demo Mode:</strong> Showing sample worker data. Backend is unavailable.
+          </div>
+        )}
 
         {/* ID Card Section */}
         <div className="bg-green-700 rounded-t-xl p-7">

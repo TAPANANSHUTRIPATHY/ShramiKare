@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { getDemoFacilities } from "../demoData";
 
 const districts = [
   "Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasargode", "Kollam",
@@ -13,11 +14,13 @@ export default function DoctorDetailsPage() {
   const [loading, setLoading] = useState(false);
   const [facilities, setFacilities] = useState([]);
   const [error, setError] = useState("");
+  const [usingDemo, setUsingDemo] = useState(false);
 
   const fetchFacilities = async () => {
     setLoading(true);
     setError("");
     setFacilities([]);
+    setUsingDemo(false);
     try {
       const res = await fetch(`${baseURL}/facilities/?district=${district}`);
       if (!res.ok) throw new Error("Failed to fetch facilities");
@@ -26,7 +29,14 @@ export default function DoctorDetailsPage() {
       const facilityArr = Object.values(data);
       setFacilities(facilityArr);
     } catch (e) {
-      setError("Could not fetch facilities. Try again.");
+      // Fallback to demo data
+      const demoData = getDemoFacilities(district);
+      if (demoData.length > 0) {
+        setFacilities(demoData);
+        setUsingDemo(true);
+      } else {
+        setError("Could not fetch facilities. No demo data available for this district.");
+      }
     } finally {
       setLoading(false);
     }
@@ -66,6 +76,14 @@ export default function DoctorDetailsPage() {
             {loading ? "Loading..." : "Show Providers"}
           </button>
         </div>
+
+        {/* Demo data banner */}
+        {usingDemo && (
+          <div className="bg-blue-50 border border-blue-300 text-blue-700 rounded-lg p-3 mb-6 text-center text-sm">
+            🧪 <strong>Demo Mode:</strong> Showing sample facilities for {district}. Backend is unavailable.
+          </div>
+        )}
+
         {/* Registered Providers List */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {error && (

@@ -12,8 +12,33 @@ import NotFound from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 
 function App() {
+<<<<<<< Updated upstream
   const storedUserId = localStorage.getItem("userId");
   const [userId, setUserId] = React.useState(storedUserId || null);
+=======
+  const [userId, setUserId] = React.useState(() => localStorage.getItem("userId") || null);
+
+<<<<<<< Updated upstream
+  const handleLogin = (id) => {
+    localStorage.setItem("userId", id);
+    setUserId(id);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+    setUserId(null);
+  };
+=======
+  // Listen for storage changes (e.g. demo login sets userId)
+  React.useEffect(() => {
+    const handleStorage = () => {
+      setUserId(localStorage.getItem("userId") || null);
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
   return (
     <Routes>

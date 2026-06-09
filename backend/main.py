@@ -1,5 +1,11 @@
 #fastapi code here
+<<<<<<< Updated upstream
 from fastapi import FastAPI, Request, Response, status, Query, HTTPException
+=======
+import dotenv
+dotenv.load_dotenv()
+from fastapi import FastAPI, Request, Response, status, Query, HTTPException, UploadFile, File, Form
+>>>>>>> Stashed changes
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import requests
@@ -155,7 +161,17 @@ async def send_reminder(aadhaar_id: str):
     return {"message": "Reminder sent successfully", "sms_sid": sms_sid}
 
 
+<<<<<<< Updated upstream
 client = genai.Client()
+=======
+client = None
+try:
+    _gemini_key = os.getenv("GEMINI_API_KEY")
+    if _gemini_key:
+        client = genai.Client(api_key=_gemini_key)
+except Exception as _e:
+    print(f"Warning: Gemini client init failed ({_e}). Outbreak prediction will be disabled.")
+>>>>>>> Stashed changes
 
 @app.get("/outbreak-prediction/")
 async def outbreak_prediction():

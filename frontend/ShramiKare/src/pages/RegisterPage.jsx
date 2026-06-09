@@ -1,6 +1,53 @@
 import React, { useState } from "react";
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+import axios from "axios";
+import { API_BASE_URL } from "../config";
+=======
+import { DEMO_USER_DATA } from "../demoData";
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 const baseURL = "http://127.0.0.1:8000/api"//process.env.REACT_APP_API_BASE_URL
+
+// Demo form values for quick testing
+const DEMO_FORM_VALUES = {
+    name: DEMO_USER_DATA.name,
+    age: String(DEMO_USER_DATA.age),
+    blood_group: DEMO_USER_DATA.blood_group,
+    language: DEMO_USER_DATA.language,
+    gender: DEMO_USER_DATA.gender,
+    address: DEMO_USER_DATA.address,
+    aadhaarNumber: "1234-5678-9012",
+    phonenumber: String(DEMO_USER_DATA.phonenumber),
+    originState: DEMO_USER_DATA.originState,
+    originDistrict: DEMO_USER_DATA.originDistrict,
+    destinationDistrict: DEMO_USER_DATA.destinationDistrict,
+    records: {
+        vaccination1: true,
+        vaccination2: true,
+        specialNotes: DEMO_USER_DATA.records.specialNotes,
+        lastVisitReason: DEMO_USER_DATA.records.lastVisitReason,
+        lastVisitDate: DEMO_USER_DATA.records.lastVisitDate,
+        visitLocation: DEMO_USER_DATA.records.visitLocation,
+        currentSymptoms: [...DEMO_USER_DATA.records.currentSymptoms],
+        nextFollowUpDate: DEMO_USER_DATA.records.nextFollowUpDate,
+        reminderStatus: DEMO_USER_DATA.records.reminderStatus,
+        outbreakFlag: false,
+    },
+    companies: [
+        {
+            name: DEMO_USER_DATA.companies[0].name,
+            from: DEMO_USER_DATA.companies[0].from,
+            to: "",
+            working: true,
+        },
+    ],
+    profilePhoto: null,
+    aadhaarPhoto: null,
+    passportPhoto: null,
+};
 
 export default function RegisterPage() {
 // Add profilePhoto to state
@@ -170,6 +217,19 @@ function handleFileChange(e) {
       <h1 className="text-3xl font-bold text-green-900 mb-8 text-center">
         Migrant Worker Registration
       </h1>
+
+      {/* Demo fill button */}
+      <div className="flex justify-center mb-4">
+        <button
+          type="button"
+          onClick={() => {
+            setForm(DEMO_FORM_VALUES);
+          }}
+          className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-500 transition shadow flex items-center gap-2"
+        >
+          <span>🧪</span> Fill with Demo Data
+        </button>
+      </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 shadow grid grid-cols-1 gap-6">
         {/* Basic Details */}
