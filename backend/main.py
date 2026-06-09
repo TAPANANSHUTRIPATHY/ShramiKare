@@ -1,7 +1,10 @@
 #fastapi code here
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 from fastapi import FastAPI, Request, Response, status, Query, HTTPException
 =======
+=======
+>>>>>>> Stashed changes
 import dotenv
 dotenv.load_dotenv()
 from fastapi import FastAPI, Request, Response, status, Query, HTTPException, UploadFile, File, Form
@@ -162,8 +165,12 @@ async def send_reminder(aadhaar_id: str):
 
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 client = genai.Client()
 =======
+=======
+# Gemini client for outbreak prediction (lazy init - won't crash if no key)
+>>>>>>> Stashed changes
 client = None
 try:
     _gemini_key = os.getenv("GEMINI_API_KEY")
@@ -171,6 +178,9 @@ try:
         client = genai.Client(api_key=_gemini_key)
 except Exception as _e:
     print(f"Warning: Gemini client init failed ({_e}). Outbreak prediction will be disabled.")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 @app.get("/outbreak-prediction/")
@@ -325,15 +335,3 @@ import asyncio
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     uvicorn.run(app, host="0.0.0.0", port=port)
-
-
-#kepp in mind about async and all for running different functions, according to await and all  
-
-
-
-
-
-
-
-
-# പ്രിയ ജെയ്ൻ ഡൂ, നിങ്ങളുടെ അടുത്ത ഹെൽത്ത് ഫോളോ-അപ്പ് 18-സെപ്റ്റംബർ -2025 ന് ഷെഡ്യൂൾ ചെയ്തിട്ടുണ്ട്. നിങ്ങളുടെ കൂടിക്കാഴ്ച വേഗത്തിൽ ബുക്ക് ചെയ്യുക. സുരക്ഷിതമായി തുടരുക
