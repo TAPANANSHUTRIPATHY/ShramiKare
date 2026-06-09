@@ -1,70 +1,179 @@
-# Getting Started with Create React App
+# 📌 ShramiKare – Multilingual Digital Health Record System  
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)  
+![Made with React](https://img.shields.io/badge/Frontend-React.js-61DAFB?logo=react&logoColor=white&style=flat-square)  
+![Made with FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white&style=flat-square)  
+![Database](https://img.shields.io/badge/Database-Firebase-F6820D?logo=firebase&logoColor=white&style=flat-square)  
+![Hackathon](https://img.shields.io/badge/Event-SIH%202025-orange?style=flat-square)  
 
-## Available Scripts
+---
+<div style="text-align: center;">
+  <img width="360" height="360" alt="Picsart_25-09-19_22-08-34-563" src="https://github.com/user-attachments/assets/449a0f30-3c95-4013-be2f-2d41f92a1348" />
+</div>
 
-In the project directory, you can run:
 
-### `npm start`
+## 🌟 Overview  
+**ShramiKare** is a **Digital Health Record Management System** designed for **migrant workers in Kerala**, aligned with **SDG-3 (Good Health and Well-being)**.  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The platform ensures **portable, multilingual, and paperless medical records**, accessible via **QR codes, Aadhaar lookup, or SMS-based reminders**, empowering migrant workers with seamless healthcare access.  
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🖼️ Screenshots & Demo  
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🔹 Landing Page  
+![Screenshot_20-9-2025_14654_localhost](https://github.com/user-attachments/assets/314329a5-22ae-44bf-b747-d6ee95bd830d)
 
-### `npm run build`
+### 🔹 OTP Login Page
+![Screenshot_20-9-2025_1477_localhost](https://github.com/user-attachments/assets/17a69d6a-7915-42ab-a801-2f9fcd218b6b)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🔹 Sample OTP SMS
+![a4843620-0cf0-462f-bdad-120fbafd44de](https://github.com/user-attachments/assets/1c1d6db2-af59-4c33-9251-91498bfb6bd2)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🔹 Facility Details Page
+![Screenshot_20-9-2025_1488_localhost](https://github.com/user-attachments/assets/5daa3fb5-f2ea-4404-8a93-d1eae4d16fe2)
 
-### `npm run eject`
+### 🔹 Aadhaar Lookup
+![Screenshot_20-9-2025_14815_localhost](https://github.com/user-attachments/assets/7dcc8ce0-a52b-4e18-97ca-37de57622489)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 🔹 Health Records Dashboard  
+![Screenshot_20-9-2025_14826_localhost](https://github.com/user-attachments/assets/ee6a3c44-2512-467a-a8aa-f7cf3713ec16)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 🔹 QR Scan Result
+<img width="780" height="972" alt="Screenshot 2025-09-19 223850" src="https://github.com/user-attachments/assets/63682fbf-7642-4ed5-b2f3-1edecad35f8b" />
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🔹 SMS Reminder Workflow  
+<img width="951" height="809" alt="Screenshot 2025-09-19 224358" src="https://github.com/user-attachments/assets/bde0d5de-2413-4136-b886-f88daba12a2d" />
 
-## Learn More
+### 🔹 Sample SMS Reminder
+![3f6a33eb-1f2a-4d25-adf0-95bd88a55e31](https://github.com/user-attachments/assets/09c93a76-2073-4f0c-872f-641992c15669)
+![0642aee5-556d-4b77-a995-b7c469403825](https://github.com/user-attachments/assets/8ba0e65d-111a-4ae2-8c23-2a2ce74b2200)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 🔹 Outbreak Prediction Workflow 
+<img width="800" height="976" alt="Screenshot 2025-09-19 224315" src="https://github.com/user-attachments/assets/78ecab65-bf6d-4f6a-a4ac-2d2afc387aa9" />
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🩺 Problem Statement  
+- Migrant workers often lack **consistent health records** across states.  
+- Paper-based systems are **prone to loss, duplication, and delays**.  
+- **Language barriers** prevent workers from understanding health instructions.  
+- Limited access to **feature phones & low connectivity** challenges inclusivity.  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 💡 Our Solution  
+- **Multilingual Mobile App** (Malayalam, Odia, Bengali, Assamese, Hindi).  
+- **QR Code + Aadhaar Lookup** for instant access to health records.  
+- **Offline-first caching** with sync on reconnection.  
+- **Automated SMS reminders** for vaccinations, check-ups, and follow-ups.  
+- **Secure cloud backend** for real-time health data availability.  
+- **Analytics dashboard** for policymakers and NGOs.  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## 🔧 Tech Stack  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+| Layer       | Technology |
+|-------------|------------|
+| **Frontend** | ⚛️ React.js, Tailwind CSS |
+| **Backend**  | 🐍 FastAPI (Python) |
+| **Database** | 🔥 Firebase Firestore |
+| **Messaging** | 📩 Twilio SMS API |
+| **Identity** | 🆔 Aadhaar |
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## ⚙️ System Architecture  
 
-### `npm run build` fails to minify
+```mermaid
+flowchart TD
+  User[👨‍🔧 Migrant Worker] -->|QR / Aadhaar| App[📱 Shramikare App]
+  App -->|API Calls| Backend[☁️ FastAPI + Firebase]
+  Backend --> DB[(🗄️ Firestore DB)]
+  Backend --> Twilio[✉️ Twilio SMS API]
+  DB --> Analytics[📊 Analytics & Dashboards]
+  Analytics --> NGO[🏥 Policymakers/NGOs]
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 🚀 Features
+
+* ✅ **Portable Records** → Access anywhere via Aadhaar or QR
+* ✅ **Multilingual UX** → Supports 5+ regional languages
+* ✅ **Inclusive** → Works on smartphones + feature phones
+* ✅ **Offline-first** → Sync when network is back
+* ✅ **Smart Alerts** → Automated SMS for due checkups
+* ✅ **Analytics Dashboard** → Track outbreaks & public health
+
+---
+
+## 🔐 Security & Privacy
+
+* Aadhaar integration with **user consent**.
+* Role-based access for doctors, NGOs, and workers.
+* Encrypted records stored in **Firestore**.
+* Compliance with **Digital India Health Mission guidelines**.
+
+---
+
+## 📈 Impact & Benefits
+
+* **Migrant Workers** → Portable, accessible, and understandable records.
+* **Healthcare Staff** → Quick record lookup → faster treatment.
+* **Government/NGOs** → Real-time data-driven insights.
+* **Society** → Supports **Digital India, Atmanirbhar Bharat, Swachh Bharat**.
+
+---
+
+## 🛠️ Installation & Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/TAPANANSHUTRIPATHY/ShramikareGreenHealth.git
+cd ShramikareGreenHealth
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
+Backend setup (FastAPI + Firebase):
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+---
+
+## 📚 References
+
+* [SIH 2025 Problem Statement](https://sih.gov.in/sih2025PS)
+* [Firebase Firestore Docs](https://firebase.google.com/docs/firestore)
+* [Twilio SMS API](https://www.twilio.com/docs/sms)
+* [Gemini API](https://ai.google.dev/gemini-api/docs)
+* [Googletrans](https://pypi.org/project/googletrans/)
+
+---
+
+<img width="443" height="72" alt="image" src="https://github.com/user-attachments/assets/4e106050-fd2c-4e52-bc96-db076cae573b" />
+
+## 👥 Team – **StellaRythm**
+
+* **Tapananshu Tripathy**
+* **Ujjwal Singh**
+* **Shubham Kumar**
+* **Hritika Shankhdhar**
+* **Palak Singh**
+* **Tejas Mahapatra**
+
+---
