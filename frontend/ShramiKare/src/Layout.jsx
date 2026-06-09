@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
-// import { cn } from "@/lib/utils";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 
-export default function Layout() {
+export default function Layout({ userId, onLogout }) {
     const [menuOpen, setMenuOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        if (onLogout) onLogout();
+        setMenuOpen(false);
+        navigate("/");
+    };
 
     return (
         <div>
@@ -46,19 +52,38 @@ export default function Layout() {
                     </svg>
                 </button>
                 {/* Desktop nav */}
-                <nav className="hidden md:flex gap-8 text-blue-700 hover:text-blue-800 font-medium">
-                    <Link to="/login">Login</Link>
-                    <Link to="/doctor-details">Doctor Details</Link>
-                    <Link to="/aadhaar-capture">Aadhaar Viewer</Link>
-                    <Link to="/digital-id">Digital ID</Link>
+                <nav className="hidden md:flex gap-6 items-center font-medium">
+                    <Link to="/doctor-details" className="text-blue-700 hover:text-blue-900 transition">Doctor Details</Link>
+                    <Link to="/aadhaar-capture" className="text-blue-700 hover:text-blue-900 transition">Aadhaar Viewer</Link>
+                    <Link to="/digital-id" className="text-blue-700 hover:text-blue-900 transition">Digital ID</Link>
+                    {userId ? (
+                        <button
+                            onClick={handleLogout}
+                            className="bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 px-4 py-1.5 rounded-lg font-semibold transition"
+                        >
+                            Logout
+                        </button>
+                    ) : (
+                        <>
+                            <Link to="/login" className="bg-green-700 text-white hover:bg-green-600 px-4 py-1.5 rounded-lg font-semibold transition">Login</Link>
+                            <Link to="/register" className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1.5 rounded-lg font-semibold transition">Register</Link>
+                        </>
+                    )}
                 </nav>
                 {/* Mobile nav */}
                 {menuOpen && (
                     <nav className="absolute top-full left-0 w-full bg-green-100 shadow-md flex flex-col gap-4 py-4 px-6 md:hidden z-10">
-                        <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
-                        <Link to="/doctor-details" onClick={() => setMenuOpen(false)}>Doctor Details</Link>
-                        <Link to="/aadhaar-capture" onClick={() => setMenuOpen(false)}>Aadhaar Viewer</Link>
-                        <Link to="/digital-id" onClick={() => setMenuOpen(false)}>Digital ID</Link>
+                        <Link to="/doctor-details" onClick={() => setMenuOpen(false)} className="text-blue-700">Doctor Details</Link>
+                        <Link to="/aadhaar-capture" onClick={() => setMenuOpen(false)} className="text-blue-700">Aadhaar Viewer</Link>
+                        <Link to="/digital-id" onClick={() => setMenuOpen(false)} className="text-blue-700">Digital ID</Link>
+                        {userId ? (
+                            <button onClick={handleLogout} className="text-red-700 font-semibold text-left">Logout</button>
+                        ) : (
+                            <>
+                                <Link to="/login" onClick={() => setMenuOpen(false)} className="text-green-700 font-semibold">Login</Link>
+                                <Link to="/register" onClick={() => setMenuOpen(false)} className="text-blue-700 font-semibold">Register</Link>
+                            </>
+                        )}
                     </nav>
                 )}
             </header>
