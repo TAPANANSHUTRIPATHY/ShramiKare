@@ -63,13 +63,17 @@ We will deploy the FastAPI backend to **Render** using the provided `Dockerfile`
     | `TWILIO_PHONE_NUMBER` | Your Twilio Phone Number |
     | `QRCODER_API_KEY` | Your QRCoder API Key |
 
-4.  **Handling the Firebase Credentials File**
-    The backend requires the `shramikare-firebase-adminsdk-fbsvc-*.json` file. Since you should **not** commit this to GitHub, you need to securely inject it:
-    *   **Option A (Base64 Env Variable):** Encode the JSON file contents to base64. Create an env variable `FIREBASE_CREDENTIALS_BASE64` in Render. In your `DB_operations.py` or `main.py`, decode this string and write it to a temporary file or load the dict directly using `credentials.Certificate(json.loads(decoded_string))`.
-    *   **Option B (Secret File):** In the Render dashboard, under **Advanced**, use the **Secret Files** feature.
+4.  **Handling the Firebase Credentials**
+    The backend requires Firebase Admin SDK credentials. Since you should **not** commit this JSON key file to GitHub, you need to inject it using one of the following methods:
+    *   **Recommended Method (Environment Variable):** Create an environment variable in Render:
+        *   **Key:** `FIREBASE_CREDENTIALS_JSON`
+        *   **Value:** Paste the entire JSON content of your `shramikare-firebase-adminsdk-fbsvc-*.json` key file (e.g., `'{"type": "service_account", ...}'`).
+        *   The backend is configured to automatically parse this JSON string and authenticate with Firebase.
+    *   **Alternative Method (Render Secret Files):**
+        *   In the Render dashboard, under the **Advanced** section of your service settings, use **Secret Files**.
         *   **Filename:** `shramikare-firebase-adminsdk.json`
         *   **Contents:** Paste the entire contents of your Firebase JSON key.
-        *   Update your code (`DB_operations.py`) to reference this file's path (Render places it in `/etc/secrets/shramikare-firebase-adminsdk.json`).
+        *   The backend will check the path `/etc/secrets/shramikare-firebase-adminsdk.json` and load it.
 
 5.  **Deploy**
     *   Click **Create Web Service**.
