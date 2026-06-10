@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import jsQR from "jsqr";
-
+import { API_BASE_URL } from "../config";
 export default function QrScannerPage() {
     const [scanResult, setScanResult] = useState(null);
     const [scanning, setScanning] = useState(false);
@@ -80,7 +80,7 @@ export default function QrScannerPage() {
                 aadhaarId = parts[parts.length - 1];
             }
 
-            const res = await fetch(`http://localhost:8000/api/users/by-aadhaar/${aadhaarId}`);
+            const res = await fetch(`${API_BASE_URL}/users/by-aadhaar/${aadhaarId}`);
             if (!res.ok) throw new Error("User not found");
             const data = await res.json();
             if (data && data.length > 0) {
