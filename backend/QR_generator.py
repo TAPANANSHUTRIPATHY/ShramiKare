@@ -1,22 +1,18 @@
-import urllib.parse
-import dotenv
-import os
-dotenv.load_dotenv()
+import qrcode
+import io
+import base64
 
-#Returns html snippet, handle in frontend accordingly
 
-def generate_qr(url=None):
-    key = os.getenv("QRCODER_API_KEY")  # replace with your unique api key
-    text = url  # replace with what you want to turn into a QR code
+def generate_qr(text):
+    """Generate a QR code as an inline HTML <img> tag (base64 encoded, no external API needed)."""
+    qr = qrcode.QRCode(version=1, box_size=6, border=2)
+    qr.add_data(text)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="#166534", back_color="white")
 
-    # URL encode the text
-    encoded_text = urllib.parse.quote(text)
+    # Convert to base64 PNG
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    b64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
 
-    # Construct the API URL
-    url_to_return_qrcode = f"https://www.qrcoder.co.uk/api/v4/?key={key}&text={encoded_text}"
-
-    # print(f'<img src="{url_to_return_qrcode}" />')
-    html = f'<img src="{url_to_return_qrcode}" />'
-    return html
-
-print(generate_qr("https://staging.eko.in/ekoapi/external/getAdhaarConsent"))
+    return f'<img src="data:image/png;base64,{b64}" alt="QR Code" style="width:160px;height:160px;" />'

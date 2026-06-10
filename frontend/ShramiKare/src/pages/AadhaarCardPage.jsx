@@ -1,90 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { DEMO_USER_ID, DEMO_USER_DATA } from "../demoData";
-
-const baseURL = "http://127.0.0.1:8000/api"//process.env.REACT_APP_API_BASE_URL
+import { API_BASE_URL } from "../config";
 
 export default function AadhaarCardPage({ userId: propUserId }) {
-  // Check localStorage if prop is empty
   const userId = propUserId || localStorage.getItem("userId");
 
   const [aadhaarImgUrl, setAadhaarImgUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [usingDemo, setUsingDemo] = useState(false);
 
   useEffect(() => {
     async function fetchAadhaarImage() {
       setLoading(true);
       setError("");
-      setUsingDemo(false);
-
-      // If demo mode, use demo data directly
-      if (userId === DEMO_USER_ID) {
-        setAadhaarImgUrl(DEMO_USER_DATA.records.aadhaarImageUrl || "/sample_aadhar.png");
-        setUsingDemo(true);
-        setLoading(false);
-        return;
-      }
-
       try {
-        const res = await fetch(`${baseURL}/users/id/${userId}`);
+        const res = await fetch(`${API_BASE_URL}/users/by-aadhaar/${userId}`);
         const data = await res.json();
-        const imgUrl = data.records?.aadhaarImageUrl;
-        if (imgUrl) setAadhaarImgUrl(imgUrl);
-        else setError("No Aadhaar image uploaded.");
+        if (data && data.length > 0) {
+          const imgUrl = data[0].records?.aadhaarImageUrl || data[0].aadhaarPhotoUrl;
+          if (imgUrl) setAadhaarImgUrl(imgUrl);
+          else setError("No Aadhaar image uploaded for this user.");
+        } else {
+          setError("User not found in database.");
+        }
       } catch {
-        // Fallback to demo
-        setAadhaarImgUrl("/sample_aadhar.png");
-        setUsingDemo(true);
+        setError("Failed to fetch data. Is the backend running?");
       } finally {
         setLoading(false);
       }
     }
     if (userId) fetchAadhaarImage();
-    else setLoading(false);
+    else {
+      setLoading(false);
+      setError("No user ID found. Please log in first.");
+    }
   }, [userId]);
 
   return (
     <div className="min-h-screen bg-green-50">
       <main className="max-w-2xl mx-auto py-12 px-4">
-        <h1 className="text-3xl font-bold text-green-800 text-center mb-2">
-          My Aadhaar Card
-        </h1>
-        <p className="text-center text-green-700 mb-6">
-          View your Aadhaar card image for identity verification.
-        </p>
-
-        {/* Demo mode banner */}
-        {usingDemo && (
-          <div className="bg-blue-50 border border-blue-300 text-blue-700 rounded-lg p-3 mb-6 text-center text-sm">
-            🧪 <strong>Demo Mode:</strong> Showing sample Aadhaar card. Backend is unavailable.
-          </div>
-        )}
+        <h1 className="text-3xl font-bold text-green-800 text-center mb-2">My Aadhaar Card</h1>
+        <p className="text-center text-green-700 mb-6">View your Aadhaar card image for identity verification.</p>
 
         <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center min-h-[320px]">
           {loading ? (
-            <div className="text-green-700 text-lg">Loading...</div>
+            <div className="text-green-700 text-lg">Loading from database...</div>
           ) : aadhaarImgUrl ? (
             <img
               src={aadhaarImgUrl}
               alt="Aadhaar Card"
               className="rounded-lg max-h-72 shadow"
-              onError={e => {
-                e.target.onerror = null;
-                e.target.src = "/sample_aadhar.png"
-              }}
+              onError={e => { e.target.onerror = null; e.target.src = "/sample_aadhar.png"; }}
             />
           ) : (
             <>
-              <img
-                src="/sample_aadhar.png"
-                alt="Sample Aadhaar Card"
-                className="rounded-lg max-h-72 shadow mb-4"
-              />
-              {/* <div className="text-red-600 bg-red-50 rounded p-4 text-center font-semibold">
-                {error || "Aadhaar card image not available."}
-              </div> */}
+              <img src="/sample_aadhar.png" alt="Sample Aadhaar Card" className="rounded-lg max-h-72 shadow mb-4" />
+              {error && <div className="text-red-600 bg-red-50 rounded p-4 text-center font-semibold mt-4">{error}</div>}
             </>
           )}
         </div>
@@ -99,9 +70,7 @@ export default function AadhaarCardPage({ userId: propUserId }) {
             <li>🛡️ Report any discrepancies or unclear images for re-upload</li>
             <li>
               🔐 <span className="font-semibold">Note:</span> If no Aadhaar card is displayed, please{" "}
-              <Link to="/login" className="text-blue-600 underline hover:text-blue-800 font-semibold">
-                log in
-              </Link>{" "}
+              <Link to="/login" className="text-blue-600 underline hover:text-blue-800 font-semibold">log in</Link>{" "}
               to view your identity document
             </li>
           </ul>
