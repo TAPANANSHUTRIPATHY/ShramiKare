@@ -4,3 +4,5 @@ credentials.py
 __pycache__/
 *.pyc
 uploads/
+.vercel
+node_modules/
