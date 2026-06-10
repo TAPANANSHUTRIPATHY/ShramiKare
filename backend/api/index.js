@@ -453,7 +453,7 @@ app.post('/send-reminder', async (req, res) => {
   Blood Group: ${userData.blood_group || 'N/A'}
   Language: ${userData.language || 'en'}
   Address: ${userData.address}
-  Vaccination Status: ${userData.records}
+  Vaccination Status: ${JSON.stringify(userData.records)}
   Special Notes: ${userData.records?.specialNotes || 'None'}
   Companies Worked: ${(userData.companies || []).map(c => c.name).join(', ')}
   
