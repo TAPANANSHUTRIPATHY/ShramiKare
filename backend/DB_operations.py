@@ -8,30 +8,35 @@ from datetime import datetime, timedelta
 
 import os
 import glob
+import json
 
-# Auto-detect Firebase service account JSON
+# Firebase credential loading - supports env var (for Render) or local JSON file
 _render_secret_path = "/etc/secrets/shramikare-firebase-adminsdk.json"
 _backend_dir = os.path.dirname(os.path.abspath(__file__))
 _firebase_jsons = glob.glob(os.path.join(_backend_dir, "*firebase-adminsdk*.json"))
 
-if os.path.exists(_render_secret_path):
-    service_account_path = _render_secret_path
-elif _firebase_jsons:
-    service_account_path = _firebase_jsons[0]
-elif os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
-    service_account_path = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-else:
-    raise FileNotFoundError(
-        "No Firebase service account JSON found in backend/ folder or Render secrets.\n"
-        "Download it from: Firebase Console -> Project Settings -> Service Accounts -> Generate New Private Key"
-    )
+_firebase_credentials_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate(service_account_path)
+    if _firebase_credentials_json:
+        # Load from environment variable (preferred for Render)
+        cred_dict = json.loads(_firebase_credentials_json)
+        cred = credentials.Certificate(cred_dict)
+    elif os.path.exists(_render_secret_path):
+        cred = credentials.Certificate(_render_secret_path)
+    elif _firebase_jsons:
+        cred = credentials.Certificate(_firebase_jsons[0])
+    elif os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        cred = credentials.Certificate(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
+    else:
+        raise FileNotFoundError(
+            "No Firebase credentials found. Set FIREBASE_CREDENTIALS_JSON env var."
+        )
     app = firebase_admin.initialize_app(cred)
 else:
     app = firebase_admin.get_app()
 db = firestore.client()
+
 
 
 def add_user(data):
