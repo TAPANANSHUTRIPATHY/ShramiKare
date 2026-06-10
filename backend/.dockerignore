@@ -1,0 +1,26 @@
+# Secrets — never include in Docker image
+.env
+*firebase-adminsdk*.json
+credentials.py
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (user data — don't bake into image)
+uploads/
+
+# Git
+.git/
+.gitignore

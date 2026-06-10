@@ -1,3 +1,6 @@
 credentials.py
 .env
-ps82-stellarythm-firebase-adminsdk-fbsvc-de4ed2b41c.json
+*firebase-adminsdk*.json
+__pycache__/
+*.pyc
+uploads/
