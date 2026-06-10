@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { API_BASE_URL } from "../config";
 
 export default function OutbreakDashboardPage() {
     const [data, setData] = useState(null);
@@ -14,7 +15,7 @@ export default function OutbreakDashboardPage() {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const res = await fetch("http://localhost:8000/api/outbreak-metrics/");
+            const res = await fetch(`${API_BASE_URL}/outbreak-metrics/`);
             const json = await res.json();
             setData(json);
         } catch (error) {
@@ -28,7 +29,7 @@ export default function OutbreakDashboardPage() {
         if (!confirm("Are you sure you want to send emergency SMS alerts to all users pending follow-ups?")) return;
         try {
             setAlertSending(true);
-            const res = await fetch("http://localhost:8000/api/send-followup-reminders/");
+            const res = await fetch(`${API_BASE_URL}/send-followup-reminders/`);
             const result = await res.json();
             setAlertSuccess(result.message || "Alerts sent successfully!");
             setTimeout(() => setAlertSuccess(""), 5000);
