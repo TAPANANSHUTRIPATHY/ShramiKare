@@ -19,8 +19,7 @@ from datetime import datetime, timezone
 import os
 import uvicorn
 
-app = FastAPI(root_path="/api")
-# app = FastAPI()
+app = FastAPI()
 
 import os
 origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
