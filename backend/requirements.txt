@@ -11,3 +11,4 @@ twilio
 python-dotenv
 urllib3
 python-multipart
+qrcode[pil]

@@ -10,7 +10,6 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-EXPOSE 8080
-
-# default port is 8080, for google cloud run
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Render provides the PORT environment variable dynamically.
+# We default to 8000 for local development.
+CMD sh -c "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"
