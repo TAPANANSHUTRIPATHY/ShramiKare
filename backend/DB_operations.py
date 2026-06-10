@@ -20,7 +20,10 @@ _firebase_credentials_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
 if not firebase_admin._apps:
     if _firebase_credentials_json:
         # Load from environment variable (preferred for Render)
-        cred_dict = json.loads(_firebase_credentials_json)
+        clean_json = _firebase_credentials_json.strip()
+        if (clean_json.startswith("'") and clean_json.endswith("'")) or (clean_json.startswith('"') and clean_json.endswith('"')):
+            clean_json = clean_json[1:-1].strip()
+        cred_dict = json.loads(clean_json)
         cred = credentials.Certificate(cred_dict)
     elif os.path.exists(_render_secret_path):
         cred = credentials.Certificate(_render_secret_path)
