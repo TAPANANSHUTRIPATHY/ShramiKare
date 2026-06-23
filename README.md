@@ -169,11 +169,11 @@ uvicorn main:app --reload
 
 ## 👥 Team – **StellaRythm**
 
-* **Tapananshu Tripathy**
 * **Ujjwal Singh**
 * **Shubham Kumar**
 * **Hritika Shankhdhar**
 * **Palak Singh**
 * **Tejas Mahapatra**
+* **Tapananshu Tripathy**
 
 ---
